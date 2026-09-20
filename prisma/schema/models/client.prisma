@@ -1,0 +1,19 @@
+model client {
+    id          Int      @id @default(autoincrement())
+    clientOldId String   @unique
+    clientType  String?
+    clientFName String
+    clientLName String
+    companyName String
+    email       String   @unique
+    phone       String   @unique
+    division    String
+    district    String
+    thana       String
+    fullAddress String
+    status      String   @default("active")
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@map("clients")
+}
