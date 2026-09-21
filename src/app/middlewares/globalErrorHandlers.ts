@@ -1,8 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 import { envVars } from "../config/env";
 import AppError from "../errorHelpers/appError";
-import { handleValidationError } from "../helpers/handlePrismaClientValidationError";
 import { handlePrismaError } from "../helpers/handlePrismaError";
 import { TErrorSources } from "../interfaces/error.types";
 
@@ -13,26 +13,31 @@ export const globalErrorHandler = async (
   next: NextFunction,
 ) => {
   if (envVars.NODE_ENV === "development") {
-    console.log(err);
+    console.log("Global Error", err);
   }
 
   let errorSources: TErrorSources[] = [];
   let statusCode = 500;
-  let message = "Something Went Wrong!!";
+  let message = err.message || "Something Went Wrong!!";
 
   // Duplicate error
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
-    console.log(err);
     const simplifiedError = handlePrismaError(err);
 
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
-  } else if (err.name === "PrismaClientValidationError") {
-    const simplifiedError = handleValidationError(err);
-    return {
-      statusCode: simplifiedError.statusCode,
-      message: simplifiedError.message,
-    };
+  } else if (err instanceof Prisma.PrismaClientValidationError) {
+    ((message = "Validation Error"),
+      (err = err.message),
+      (statusCode = StatusCodes.BAD_REQUEST));
+  } else if (err instanceof Prisma.PrismaClientUnknownRequestError) {
+    ((message = "Unknown Prisma error occurred!"),
+      (err = err.message),
+      (statusCode = StatusCodes.BAD_REQUEST));
+  } else if (err instanceof Prisma.PrismaClientInitializationError) {
+    ((message = "Prisma client failed to initialize!"),
+      (err = err.message),
+      (statusCode = StatusCodes.BAD_REQUEST));
   } else if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
@@ -40,7 +45,6 @@ export const globalErrorHandler = async (
     statusCode = 500;
     message = err.message;
   }
-
   res.status(statusCode).json({
     success: false,
     message,

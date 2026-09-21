@@ -11,7 +11,7 @@ export const catchAsync =
   (fn: TAsyncHandler) => (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch((err: any) => {
       if (envVars.NODE_ENV === "development") {
-        console.log(err);
+        console.log("catchAsync:", err);
       }
       next(err);
     });

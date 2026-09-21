@@ -9,6 +9,10 @@ const notFound = (req, res) => {
         statusCode: http_status_codes_1.default.NOT_FOUND,
         success: false,
         message: "Route Not Found!",
+        error: {
+            path: req.originalUrl,
+            message: "Your requested path is not found!",
+        },
     });
 };
 exports.default = notFound;

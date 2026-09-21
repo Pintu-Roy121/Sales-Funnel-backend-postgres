@@ -5,7 +5,7 @@ const env_js_1 = require("../config/env.js");
 const catchAsync = (fn) => (req, res, next) => {
     Promise.resolve(fn(req, res, next)).catch((err) => {
         if (env_js_1.envVars.NODE_ENV === "development") {
-            console.log(err);
+            console.log("catchAsync:", err);
         }
         next(err);
     });

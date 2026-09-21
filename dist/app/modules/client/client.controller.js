@@ -14,5 +14,14 @@ const createClient = (0, catchAsync_1.catchAsync)(async (req, res) => {
         data: result,
     });
 });
-exports.ClientController = { createClient };
+const getAllClient = (0, catchAsync_1.catchAsync)(async (req, res) => {
+    const result = await client_service_1.ClientService.getAllClient(req);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: http_status_codes_1.StatusCodes.OK,
+        success: true,
+        message: "Successful!",
+        data: result,
+    });
+});
+exports.ClientController = { createClient, getAllClient };
 //# sourceMappingURL=client.controller.js.map

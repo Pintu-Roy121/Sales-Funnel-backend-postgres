@@ -1,0 +1,15 @@
+enum UserRole {
+    admin
+    team_lead
+    employee
+    activation_ops
+    lead_viewer
+    lead_generator
+    atl
+}
+
+enum UserStatus {
+    active
+    inactive
+    terminated
+}

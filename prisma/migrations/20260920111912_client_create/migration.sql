@@ -27,3 +27,5 @@ CREATE UNIQUE INDEX "clients_email_key" ON "clients"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "clients_phone_key" ON "clients"("phone");
+
+ALTER SEQUENCE "clients_id_seq" RESTART WITH 1000;

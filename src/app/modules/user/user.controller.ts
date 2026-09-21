@@ -2,10 +2,11 @@ import { catchAsync } from "@/app/utils/catchAsync";
 import { sendResponse } from "@/app/utils/sendResponse";
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { ClientService } from "./client.service";
+import { UserService } from "./user.service";
 
-const createClient = catchAsync(async (req: Request, res: Response) => {
-  const result = await ClientService.createClient(req.body);
+const createUser = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.createUser(req.body);
+
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -14,8 +15,8 @@ const createClient = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getAllClient = catchAsync(async (req: Request, res: Response) => {
-  const result = await ClientService.getAllClient(req);
+const getAllUser = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.getAllUser(req);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -24,4 +25,4 @@ const getAllClient = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const ClientController = { createClient, getAllClient };
+export const UserController = { createUser, getAllUser };

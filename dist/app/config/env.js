@@ -7,7 +7,12 @@ exports.envVars = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const loadEnvVariables = () => {
-    const requireEnvVariables = ["PORT", "DATABASE_URL", "NODE_ENV"];
+    const requireEnvVariables = [
+        "PORT",
+        "DATABASE_URL",
+        "NODE_ENV",
+        "BCRYPT_SALT_ROUND",
+    ];
     const missing = requireEnvVariables.filter((key) => !process.env[key]);
     if (missing.length > 0) {
         throw new Error(`Missing environment variables: ${missing.join(", ")}.\n` +
@@ -17,6 +22,7 @@ const loadEnvVariables = () => {
         PORT: process.env.PORT,
         DATABASE_URL: process.env.DATABASE_URL,
         NODE_ENV: process.env.NODE_ENV,
+        BCRYPT_SALT_ROUND: process.env.BCRYPT_SALT_ROUND,
     };
 };
 exports.envVars = loadEnvVariables();

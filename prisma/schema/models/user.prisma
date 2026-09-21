@@ -1,0 +1,42 @@
+model User {
+    id               Int        @id @default(autoincrement())
+    name             String
+    email            String     @unique
+    password         String
+    role             UserRole   @default(employee)
+    status           UserStatus @default(inactive)
+    avatar           String?
+    phone            String?
+    department       String?
+    designation      String?
+    zone             String?
+    eid              String?
+    joinDate         DateTime   @default(now())
+    lastLogin        DateTime?
+    accessDepartment String[]
+    accessPath       String[]
+    roleDepartment   String[]
+    accessService    String[]
+    // User who created this user
+    createdById      Int?
+    createdBy        User?      @relation("UserCreatedBy", fields: [createdById], references: [id])
+    createdUsers     User[]     @relation("UserCreatedBy")
+    // Team Lead relationship
+    teamLeadId       Int?
+    teamLead         User?      @relation("TeamLeadEmployees", fields: [teamLeadId], references: [id])
+    employees        User[]     @relation("TeamLeadEmployees")
+    // ATL relationship
+    atlId            Int?
+    atl              User?      @relation("AtlEmployees", fields: [atlId], references: [id])
+    atlEmployees     User[]     @relation("AtlEmployees")
+    createdAt        DateTime   @default(now())
+    updatedAt        DateTime   @updatedAt
+
+    @@index([role])
+    @@index([phone])
+    @@index([teamLeadId])
+    @@index([status])
+    @@index([atlId])
+    @@index([createdById])
+    @@map("users")
+}

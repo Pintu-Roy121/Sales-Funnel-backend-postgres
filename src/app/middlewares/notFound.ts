@@ -6,6 +6,10 @@ const notFound = (req: Request, res: Response) => {
     statusCode: httpStatus.NOT_FOUND,
     success: false,
     message: "Route Not Found!",
+    error: {
+      path: req.originalUrl,
+      message: "Your requested path is not found!",
+    },
   });
 };
 export default notFound;

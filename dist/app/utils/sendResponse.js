@@ -7,7 +7,6 @@ const sendResponse = (res, data) => {
         success: data?.success,
         message: data?.message,
         data: data?.data,
-        meta: data?.meta,
     });
 };
 exports.sendResponse = sendResponse;
