@@ -31,7 +31,6 @@ const createUser = async (payload: TCreateUser) => {
     email,
     password: hashedPassword,
   };
-  //   console.log(createPayload);
 
   const result = await prisma.user.create({ data: createPayload });
 
