@@ -10,7 +10,7 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: "Successful!",
+    message: "User created successfully",
     data: result,
   });
 });
@@ -20,7 +20,7 @@ const getAllUser = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: "Successful!",
+    message: "Successful",
     data: result,
   });
 });

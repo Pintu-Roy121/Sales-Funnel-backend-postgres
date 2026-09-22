@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { envVars } from "../config/env";
 import AppError from "../errorHelpers/appError";
+import { handleValidationError } from "../helpers/handlePrismaClientValidationError";
 import { handlePrismaError } from "../helpers/handlePrismaError";
 import { TErrorSources } from "../interfaces/error.types";
 
@@ -27,9 +28,11 @@ export const globalErrorHandler = async (
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
   } else if (err instanceof Prisma.PrismaClientValidationError) {
-    ((message = "Validation Error"),
-      (err = err.message),
-      (statusCode = StatusCodes.BAD_REQUEST));
+    const simplifiedError = handleValidationError(err)
+
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message
+
   } else if (err instanceof Prisma.PrismaClientUnknownRequestError) {
     ((message = "Unknown Prisma error occurred!"),
       (err = err.message),
@@ -46,6 +49,7 @@ export const globalErrorHandler = async (
     message = err.message;
   }
   res.status(statusCode).json({
+    statusCode,
     success: false,
     message,
     errorSources,

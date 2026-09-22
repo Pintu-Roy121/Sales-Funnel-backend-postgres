@@ -5,6 +5,7 @@ model User {
     password         String
     role             UserRole   @default(employee)
     status           UserStatus @default(inactive)
+    //optional field
     avatar           String?
     phone            String?
     department       String?
@@ -13,6 +14,7 @@ model User {
     eid              String?
     joinDate         DateTime   @default(now())
     lastLogin        DateTime?
+    //Null Array
     accessDepartment String[]
     accessPath       String[]
     roleDepartment   String[]
@@ -29,8 +31,15 @@ model User {
     atlId            Int?
     atl              User?      @relation("AtlEmployees", fields: [atlId], references: [id])
     atlEmployees     User[]     @relation("AtlEmployees")
-    createdAt        DateTime   @default(now())
-    updatedAt        DateTime   @updatedAt
+
+    //target Relationship
+    targets           Target[] @relation("TargetUser")
+    targetsSetBy      Target[] @relation("TargetSetBy")
+    targetsAsTeamLead Target[] @relation("TargetTeamLead")
+
+    //Timestamps
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
     @@index([role])
     @@index([phone])

@@ -16,7 +16,6 @@ const createClient = async (payload: TClient) => {
     throw new AppError(StatusCodes.CONFLICT, "Client Already Exist");
   }
 
-  // const result = payload;
   const result = await prisma.client.create({ data: payload });
 
   return result;

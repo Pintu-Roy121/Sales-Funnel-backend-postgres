@@ -1,4 +1,4 @@
-model client {
+model Client {
     id          Int      @id @default(autoincrement())
     clientOldId String   @unique
     clientType  String?

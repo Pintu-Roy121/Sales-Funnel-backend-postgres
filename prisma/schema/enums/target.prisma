@@ -1,0 +1,5 @@
+enum TargetType {
+    amount
+    pcs
+    both
+}

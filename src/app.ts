@@ -26,7 +26,7 @@ app.use("/api/v1", router);
 app.get("/api/v1/health", (req, res) => {
   res.json({
     status: "OK",
-    message: "Server API is running",
+    message: "Postgres Server API is running",
     timestamp: new Date(),
   });
 });

@@ -19,8 +19,7 @@ export const handlePrismaError = (err: unknown): TGenericErrorResponse => {
       case "P2003":
         return {
           statusCode: 409,
-          message:
-            "This record cannot be deleted because it is referenced by another record.",
+          message: "The operation failed because a related record does not exist.",
         };
 
       default:
