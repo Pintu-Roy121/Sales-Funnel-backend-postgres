@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { ClientRoutes } from "../modules/client/client.route";
+import { LeadRoutes } from "../modules/lead/lead.route";
 import { TargetRoutes } from "../modules/target/target.route";
 import { UserRoutes } from "../modules/user/user.route";
 
@@ -17,6 +18,10 @@ const moduleRoutes = [
   {
     path: "/target",
     route: TargetRoutes,
+  },
+  {
+    path: "/lead",
+    route: LeadRoutes,
   }
 ];
 

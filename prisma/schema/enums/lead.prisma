@@ -1,0 +1,36 @@
+enum ClientType {
+    CORP
+    HOME
+    SOHO
+}
+
+enum ClientClass {
+    new
+    existing
+    lost
+}
+
+enum LeadStatus {
+    open
+    won
+    lost
+    junk
+}
+
+enum ActivationStatus {
+    pending
+    noc_pending
+    fiber_pending
+    system_pending
+    sdv_pending
+    done
+    rejected
+}
+
+enum BillingStatus {
+    pending
+    in_progress
+    active
+    suspended
+    canceled
+}

@@ -1,45 +1,48 @@
 model User {
-    id               Int        @id @default(autoincrement())
-    name             String
-    email            String     @unique
-    password         String
-    role             UserRole   @default(employee)
-    status           UserStatus @default(inactive)
+    id                Int        @id @default(autoincrement())
+    name              String
+    email             String     @unique
+    password          String
+    role              UserRole   @default(employee)
+    status            UserStatus @default(inactive)
     //optional field
-    avatar           String?
-    phone            String?
-    department       String?
-    designation      String?
-    zone             String?
-    eid              String?
-    joinDate         DateTime   @default(now())
-    lastLogin        DateTime?
+    avatar            String?
+    phone             String?
+    department        String?
+    designation       String?
+    zone              String?
+    eid               String?
+    joinDate          DateTime   @default(now())
+    lastLogin         DateTime?
     //Null Array
-    accessDepartment String[]
-    accessPath       String[]
-    roleDepartment   String[]
-    accessService    String[]
+    accessDepartment  String[]
+    accessPath        String[]
+    roleDepartment    String[]
+    accessService     String[]
     // User who created this user
-    createdById      Int?
-    createdBy        User?      @relation("UserCreatedBy", fields: [createdById], references: [id])
-    createdUsers     User[]     @relation("UserCreatedBy")
+    createdById       Int?
+    createdBy         User?      @relation("UserCreatedBy", fields: [createdById], references: [id])
+    createdUsers      User[]     @relation("UserCreatedBy")
     // Team Lead relationship
-    teamLeadId       Int?
-    teamLead         User?      @relation("TeamLeadEmployees", fields: [teamLeadId], references: [id])
-    employees        User[]     @relation("TeamLeadEmployees")
+    teamLeadId        Int?
+    teamLead          User?      @relation("TeamLeadEmployees", fields: [teamLeadId], references: [id])
+    employees         User[]     @relation("TeamLeadEmployees")
     // ATL relationship
-    atlId            Int?
-    atl              User?      @relation("AtlEmployees", fields: [atlId], references: [id])
-    atlEmployees     User[]     @relation("AtlEmployees")
-
+    atlId             Int?
+    atl               User?      @relation("AtlEmployees", fields: [atlId], references: [id])
+    atlEmployees      User[]     @relation("AtlEmployees")
     //target Relationship
-    targets           Target[] @relation("TargetUser")
-    targetsSetBy      Target[] @relation("TargetSetBy")
-    targetsAsTeamLead Target[] @relation("TargetTeamLead")
-
+    targets           Target[]   @relation("TargetUser")
+    targetsSetBy      Target[]   @relation("TargetSetBy")
+    targetsAsTeamLead Target[]   @relation("TargetTeamLead")
+    //lead Relationship
+    leadsAsKam        Lead[]     @relation("LeadKam")
+    leadsAsTeamLead   Lead[]     @relation("LeadTeamLead")
+    leadsAsAtl        Lead[]     @relation("LeadAtl")
+    leadsCreated      Lead[]     @relation("LeadCreatedBy")
     //Timestamps
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt         DateTime   @default(now())
+    updatedAt         DateTime   @updatedAt
 
     @@index([role])
     @@index([phone])

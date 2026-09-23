@@ -1,0 +1,191 @@
+model Lead {
+    id                     Int                    @id @default(autoincrement())
+    // User relations
+    kamId                  Int
+    kam                    User                   @relation("LeadKam", fields: [kamId], references: [id])
+    teamLeadId             Int?
+    teamLead               User?                  @relation("LeadTeamLead", fields: [teamLeadId], references: [id])
+    atlId                  Int?
+    atl                    User?                  @relation("LeadAtl", fields: [atlId], references: [id])
+    createdById            Int?
+    createdBy              User?                  @relation("LeadCreatedBy", fields: [createdById], references: [id])
+    // Client information
+    clientType             ClientType             @default(CORP)
+    clientClass            ClientClass            @default(new)
+    organizationName       String?
+    division               String
+    district               String
+    thana                  String
+    detailedAddress        String
+    clientFName            String
+    clientLName            String
+    clientDesignation      String?
+    clientMobileNumber     String
+    clientEmail            String
+    clientIndustry         String?
+    houseHold              String?
+    existingPreviousIsp    String?
+    connectivityMethod     String
+    serviceClass           String
+    serviceType            String[]
+    addOnType              String                 @default("none")
+    packageName            String?
+    // Lead metrics
+    interactionCount       Int                    @default(0)
+    mrcAmount              Decimal                @default(0) @db.Decimal(10, 2)
+    otcAmount              Decimal                @default(0) @db.Decimal(10, 2)
+    expectedClosingMonth   String
+    maturityStage          String                 @default("Lead Generated")
+    maturityPercentage     Decimal                @default(10) @db.Decimal(10, 2)
+    remarks                String?
+    // Activation
+    expectedActivationDate DateTime?
+    lostNote               String?
+    wonDocumentUrl         String?
+    proposalDocumentUrl    String?
+    status                 LeadStatus             @default(open)
+    totalUser              Int                    @default(0)
+    activationStatus       ActivationStatus       @default(pending)
+    actualActivationDate   DateTime?
+    startBillingDate       DateTime?
+    isActivationMailSend   Boolean                @default(false)
+    isBillingMailSend      Boolean                @default(false)
+    billingStatus          BillingStatus          @default(pending)
+    popName                String                 @default("")
+    nid                    String?
+    serviceId              String?
+    billingAccess          String?
+    myStoreId              String?
+    ticketId               String?
+    pppoeUser              String?
+    pppoePassword          String?
+    ispType                String                 @default("")
+    // Child relations
+    maturityHistories      MaturityHistory[]
+    connectivityLocations  ConnectivityLocation[]
+    billingDetail          BillingDetail?
+    technicalDetail        TechnicalDetail?
+    // location relation
+    locationId             Int?
+    location               Location?              @relation(fields: [locationId], references: [id])
+    // serviceBreakdowns      ServiceBreakdown[]
+    // Timestamps
+    createdAt              DateTime               @default(now())
+    updatedAt              DateTime               @updatedAt
+
+    @@index([status])
+    @@index([serviceClass])
+    @@index([clientType])
+    @@index([clientClass])
+    @@index([maturityStage])
+    @@index([atlId])
+    @@index([serviceId])
+    @@index([billingAccess])
+    @@index([myStoreId])
+    @@index([ticketId])
+    @@map("leads")
+}
+
+model MaturityHistory {
+    id                      Int      @id @default(autoincrement())
+    leadId                  Int
+    stage                   String
+    percentage              Decimal  @db.Decimal(3, 2)
+    oldMrcAmount            Decimal? @db.Decimal(10, 2)
+    newMrcAmount            Decimal? @db.Decimal(10, 2)
+    oldOtcAmount            Decimal? @db.Decimal(10, 2)
+    newOtcAmount            Decimal? @db.Decimal(10, 2)
+    oldExpectedClosingMonth String?
+    newExpectedClosingMonth String?
+    updatedAt               DateTime @default(now())
+    note                    String   @default("Pipeline metrics updated.")
+    lead                    Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+    @@index([leadId])
+    @@map("maturity_histories")
+}
+
+model ConnectivityLocation {
+    id Int @id @default(autoincrement())
+
+    leadId Int
+
+    serviceName String
+    address     String
+    packageName String  @default("")
+    remarks     String  @default("")
+    mrc         Decimal @default(0) @db.Decimal(10, 2)
+    otc         Decimal @default(0) @db.Decimal(10, 2)
+    qty         Int     @default(0)
+    tkPerMb     Decimal @default(0) @db.Decimal(10, 2)
+
+    lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+    @@index([leadId])
+    @@map("connectivity_locations")
+}
+
+model BillingDetail {
+    id Int @id @default(autoincrement())
+
+    leadId Int @unique
+
+    firstName       String?
+    lastName        String?
+    designation     String?
+    phoneNumber     String?
+    email           String?
+    detailedAddress String?
+    paymentMethod   String?
+    trxId           String?
+    activationDate  String?
+
+    lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+    @@map("billing_details")
+}
+
+model TechnicalDetail {
+    id Int @id @default(autoincrement())
+
+    leadId Int @unique
+
+    firstName   String?
+    lastName    String?
+    designation String?
+    phoneNumber String?
+    email       String?
+
+    lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+    @@map("technical_details")
+}
+
+model Location {
+    id       Int    @id @default(autoincrement())
+    division String
+    district String
+    thana    String
+
+    leads   Lead[]
+    clients Client[]
+
+    @@unique([division, district, thana])
+    @@map("locations")
+}
+
+// model ServiceBreakdown {
+//     id Int @id @default(autoincrement())
+
+//     leadId Int
+
+//     serviceName String
+//     mrc         Decimal @default(0)
+//     otc         Decimal @default(0)
+//     remarks     String  @default("")
+
+//     lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+//     @@index([leadId])
+//     @@map("service_breakdowns")
+// }

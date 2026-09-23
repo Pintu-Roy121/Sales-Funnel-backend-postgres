@@ -19,10 +19,10 @@ const createTarget = async (payload: TCreateTarget) => {
     }
 
 
-    const result = isUserExist
-    // const result = prisma.target.create({
-    //     data: payload
-    // });
+    // const result = isUserExist
+    const result = prisma.target.create({
+        data: payload
+    });
 
     return result;
 }
