@@ -8,19 +8,25 @@ export const createLeadValidator = [
         .isInt({ min: 1 })
         .withMessage('kamId must be a valid integer'),
 
-    body('teamLeadId')
-        .isInt({ min: 1 })
-        .withMessage('teamLeadId must be a valid integer'),
+    body('userEmail')
+        .notEmpty()
+        .withMessage('userEmail is required')
+        .isEmail()
+        .withMessage('userEmail must be a valid email'),
+    // body('teamLeadId')
+    //     .optional({ values: "null" })
+    //     .isInt({ min: 1 })
+    //     .withMessage('teamLeadId must be a valid integer'),
 
-    body('atlId')
-        .optional({ nullable: true })
-        .isInt({ min: 1 })
-        .withMessage('atlId must be a valid integer'),
+    // body('atlId')
+    //     .optional({ nullable: true })
+    //     .isInt({ min: 1 })
+    //     .withMessage('atlId must be a valid integer'),
 
-    body('createdById')
-        .optional({ nullable: true })
-        .isInt({ min: 1 })
-        .withMessage('createdById must be a valid integer'),
+    // body('createdById')
+    //     .optional({ nullable: true })
+    //     .isInt({ min: 1 })
+    //     .withMessage('createdById must be a valid integer'),
 
     // Client information
     body('clientType')
@@ -63,8 +69,7 @@ export const createLeadValidator = [
         .withMessage('thana must be a string'),
 
     body('detailedAddress')
-        .notEmpty()
-        .withMessage('detailedAddress is required')
+        .optional({ values: "null" })
         .isString()
         .trim()
         .withMessage('detailedAddress must be a string'),

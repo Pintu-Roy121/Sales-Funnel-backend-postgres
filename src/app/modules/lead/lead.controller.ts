@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { LeadService } from "./lead.service";
 
 const createLead = catchAsync(async (req: Request, res: Response) => {
-    const result = await LeadService.createLead(req)
+    const result = await LeadService.createLead(req.body)
 
     sendResponse(res, {
         statusCode: 200,

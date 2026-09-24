@@ -13,9 +13,10 @@ model Location {
 
 model Lead {
     id                     Int                    @id @default(autoincrement())
+    // userEmail              String?
     // User relations
-    kamId                  Int
-    kam                    User                   @relation("LeadKam", fields: [kamId], references: [id])
+    kamId                  Int?
+    kam                    User?                  @relation("LeadKam", fields: [kamId], references: [id])
     teamLeadId             Int?
     teamLead               User?                  @relation("LeadTeamLead", fields: [teamLeadId], references: [id])
     atlId                  Int?
@@ -122,8 +123,6 @@ model MaturityHistory {
 model ConnectivityLocation {
     id Int @id @default(autoincrement())
 
-    leadId Int
-
     serviceName String
     address     String
     packageName String  @default("")
@@ -133,7 +132,8 @@ model ConnectivityLocation {
     qty         Int     @default(0)
     tkPerMb     Decimal @default(0) @db.Decimal(11, 2)
 
-    lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+    leadId Int
+    lead   Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
     @@index([leadId])
     @@map("connectivity_locations")
