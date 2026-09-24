@@ -13,6 +13,9 @@ const createUser = async (payload: TCreateUser) => {
   if (!email) {
     throw new AppError(StatusCodes.BAD_REQUEST, "Email is required!");
   }
+  if (!password) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "Password is required!");
+  }
   const isUserExist = await prisma.user.findUnique({
     where: { email },
   });
@@ -31,6 +34,17 @@ const createUser = async (payload: TCreateUser) => {
     email,
     password: hashedPassword,
   };
+
+  const userCount = await prisma.user.count();
+
+  // First user = System Admin
+  if (userCount === 0) {
+    const result = await prisma.user.create({
+      data: createPayload
+    });
+
+    return result;
+  }
 
   const result = await prisma.user.create({ data: createPayload });
 

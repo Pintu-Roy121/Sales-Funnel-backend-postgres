@@ -2,6 +2,7 @@ import chalk from "chalk";
 import { Server } from "http";
 import app from "./app";
 import { connectDB } from "./app/config/prisma";
+import { seedAdmin } from "./app/utils/seedAdmin";
 
 let server: Server;
 const PORT = process.env.PORT || 5000;
@@ -17,7 +18,11 @@ const startServer = async () => {
   }
 };
 
-startServer();
+// startServer();
+(async () => {
+  await startServer()
+  await seedAdmin()
+})();
 
 process.on("unhandledRejection", () => {
   console.error("Unhandled Rejection detected. Shutting down gracefully...");

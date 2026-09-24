@@ -25,11 +25,13 @@ export const createLeadValidator = [
     // Client information
     body('clientType')
         .optional()
+        .default('CORP')
         .isIn(Object.values(ClientType))
         .withMessage('Invalid clientType'),
 
     body('clientClass')
         .optional()
+        .default('new')
         .isIn(Object.values(ClientClass))
         .withMessage('Invalid clientClass'),
 
@@ -226,6 +228,7 @@ export const createLeadValidator = [
 
     body('status')
         .optional()
+        .default('open')
         .isIn(Object.values(LeadStatus))
         .withMessage('Invalid lead status'),
 
@@ -236,6 +239,7 @@ export const createLeadValidator = [
 
     body('activationStatus')
         .optional()
+        .default('pending')
         .isIn(Object.values(ActivationStatus))
         .withMessage('Invalid activationStatus'),
 
@@ -261,6 +265,7 @@ export const createLeadValidator = [
 
     body('billingStatus')
         .optional()
+        .default('pending')
         .isIn(Object.values(BillingStatus))
         .withMessage('Invalid billingStatus'),
 

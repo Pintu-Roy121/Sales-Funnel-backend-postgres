@@ -61,6 +61,20 @@ const lead = {
     // "serviceBreakdown": []
 }
 
+//Create Lead flow-new added
+// 1. Location
+//       ↓
+// 2. Lead
+//       ↓
+// 3. MaturityHistory
+//       ↓
+// 4. ConnectivityLocation
+//       ↓
+// 5. BillingDetail
+//       ↓
+// 6. TechnicalDetail
+//============================================
+//Relation tables
 // users
 //   │
 //   ├── leads.kam_id

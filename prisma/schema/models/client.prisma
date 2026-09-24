@@ -1,21 +1,45 @@
-model Client {
-    id          Int       @id @default(autoincrement())
-    clientOldId String    @unique
-    clientType  String?
-    clientFName String
-    clientLName String
-    companyName String
-    email       String    @unique
-    phone       String    @unique
-    division    String
-    district    String
-    thana       String
-    locationId  Int?
-    location    Location? @relation(fields: [locationId], references: [id])
-    fullAddress String
-    status      String    @default("active")
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
+// model Client {
+//     id          Int       @id @default(autoincrement())
+//     clientOldId String    @unique
+//     clientType  String?
+//     clientFName String
+//     clientLName String
+//     companyName String
+//     email       String    @unique
+//     phone       String    @unique
+//     division    String
+//     district    String
+//     thana       String
+//     locationId  Int?
+//     location    Location? @relation(fields: [locationId], references: [id])
+//     fullAddress String
+//     status      String    @default("active")
+//     createdAt   DateTime  @default(now())
+//     updatedAt   DateTime  @updatedAt
 
+//     @@map("clients")
+// }
+model Client {
+    id                Int         @id @default(autoincrement())
+    // clientOldId      String    @unique
+    clientType        ClientType  @default(CORP)
+    clientClass       ClientClass @default(new)
+    organizationName  String
+    detailedAddress   String      @default("")
+    clientFName       String
+    clientLName       String
+    clientDesignation String?
+    email             String      @unique
+    phone             String      @unique
+    houseHold         String?
+    clientIndustry    String?
+    locationId        Int?
+    location          Location?   @relation(fields: [locationId], references: [id])
+    status            String      @default("active")
+    createdAt         DateTime    @default(now())
+    updatedAt         DateTime    @updatedAt
+
+    @@index([clientType])
+    @@index([clientClass])
     @@map("clients")
 }

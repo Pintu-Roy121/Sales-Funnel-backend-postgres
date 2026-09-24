@@ -3,10 +3,10 @@ model Target {
     month          String
     targetType     TargetType @default(both)
     //optional/default field
-    targetAmount   Decimal    @default(0) @db.Decimal(10, 2)
+    targetAmount   Decimal    @default(0) @db.Decimal(11, 2)
     targetPcs      Int        @default(0)
-    achievedAmount Decimal    @default(0) @db.Decimal(10, 2)
-    maturityAmount Decimal    @default(0) @db.Decimal(10, 2)
+    achievedAmount Decimal    @default(0) @db.Decimal(11, 2)
+    maturityAmount Decimal    @default(0) @db.Decimal(11, 2)
     achievedPcs    Int        @default(0)
     maturityPcs    Int        @default(0)
     // Employee receiving the target
