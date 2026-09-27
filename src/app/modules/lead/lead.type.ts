@@ -207,7 +207,7 @@ export interface CreateLeadPayload {
     lostNote?: string;
     wonDocumentUrl?: string;
     proposalDocumentUrl?: string;
-
+    connectivityLocations?: IConnectivityLocation[];
     totalUser?: number;
 
     popName?: string;
@@ -224,9 +224,12 @@ export interface CreateLeadPayload {
 }
 
 
+
 import { Prisma } from "@prisma/client";
 
 export type Lead = Prisma.LeadGetPayload<{}>;
+
+
 
 // const lead = {
 //     "clientClass": "new",

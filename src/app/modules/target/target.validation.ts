@@ -1,85 +1,80 @@
-import { TargetType } from '@prisma/client';
-import { body } from 'express-validator';
+import { TargetType } from "@prisma/client";
+import { z } from "zod";
 
-export const createTargetValidation = [
-    body('month')
+const decimalField = (fieldName: string) =>
+    z
+        .union([
+            z.string(),
+            z.number(),
+        ])
+        .refine(
+            (value) => {
+                const stringValue = String(value);
+
+                return /^\d+(\.\d+)?$/.test(stringValue);
+            },
+            {
+                message: `${fieldName} must be a valid decimal number`,
+            },
+        )
+        .refine(
+            (value) => Number(value) >= 0,
+            {
+                message: `${fieldName} cannot be negative`,
+            },
+        );
+
+const positiveIntegerField = (fieldName: string) =>
+    z.coerce
+        .number({
+            message: `${fieldName} must be a positive integer`,
+        })
+        .int(`${fieldName} must be a positive integer`)
+        .min(1, `${fieldName} must be a positive integer`);
+
+const nonNegativeIntegerField = (fieldName: string) =>
+    z.coerce
+        .number({
+            message: `${fieldName} must be a non-negative integer`,
+        })
+        .int(`${fieldName} must be a non-negative integer`)
+        .min(0, `${fieldName} must be a non-negative integer`);
+
+export const createTargetSchema = z.object({
+    month: z
+        .string({
+            message: "Month is required",
+        })
         .trim()
-        .notEmpty()
-        .withMessage('Month is required')
-        .matches(/^\d{4}-(0[1-9]|1[0-2])$/)
-        .withMessage('Month must be in YYYY-MM format'),
+        .min(1, "Month is required")
+        .regex(
+            /^\d{4}-(0[1-9]|1[0-2])$/,
+            "Month must be in YYYY-MM format",
+        ),
 
-    body('targetType')
-        .default('both')
-        .isIn(Object.values(TargetType))
-        .withMessage('Target type must be amount, pcs, or both'),
+    targetType: z
+        .enum(Object.values(TargetType) as [string, ...string[]], {
+            message: "Target type must be amount, pcs, or both",
+        })
+        .default(TargetType.both),
 
-    body('targetAmount')
-        .optional()
-        .isDecimal()
-        .withMessage('Target amount must be a valid decimal number')
-        .custom((value) => {
-            if (Number(value) < 0) {
-                throw new Error('Target amount cannot be negative');
-            }
+    targetAmount: decimalField("Target amount").optional(),
 
-            return true;
-        }),
+    targetPcs: nonNegativeIntegerField("Target pcs").optional(),
 
-    body('targetPcs')
-        .optional()
-        .isInt({ min: 0 })
-        .withMessage('Target pcs must be a non-negative integer'),
+    achievedAmount: decimalField("Achieved amount").optional(),
 
-    body('achievedAmount')
-        .optional()
-        .isDecimal()
-        .withMessage('Achieved amount must be a valid decimal number')
-        .custom((value) => {
-            if (Number(value) < 0) {
-                throw new Error('Achieved amount cannot be negative');
-            }
+    maturityAmount: decimalField("Maturity amount").optional(),
 
-            return true;
-        }),
+    achievedPcs: nonNegativeIntegerField("Achieved pcs").optional(),
 
-    body('maturityAmount')
-        .optional()
-        .isDecimal()
-        .withMessage('Maturity amount must be a valid decimal number')
-        .custom((value) => {
-            if (Number(value) < 0) {
-                throw new Error('Maturity amount cannot be negative');
-            }
+    maturityPcs: nonNegativeIntegerField("Maturity pcs").optional(),
 
-            return true;
-        }),
+    userId: positiveIntegerField("User ID"),
 
-    body('achievedPcs')
-        .optional()
-        .isInt({ min: 0 })
-        .withMessage('Achieved pcs must be a non-negative integer'),
+    setById: positiveIntegerField("Set by ID"),
 
-    body('maturityPcs')
-        .optional()
-        .isInt({ min: 0 })
-        .withMessage('Maturity pcs must be a non-negative integer'),
+    teamLeadId: positiveIntegerField("Team lead ID"),
+});
 
-    body('userId')
-        .notEmpty()
-        .withMessage('User ID is required')
-        .isInt({ min: 1 })
-        .withMessage('User ID must be a positive integer'),
-
-    body('setById')
-        .notEmpty()
-        .withMessage('Set by ID is required')
-        .isInt({ min: 1 })
-        .withMessage('Set by ID must be a positive integer'),
-
-    body('teamLeadId')
-        .notEmpty()
-        .withMessage('Team lead ID is required')
-        .isInt({ min: 1 })
-        .withMessage('Team lead ID must be a positive integer'),
-];
+export type TCreateTarget = z.infer<typeof createTargetSchema>;

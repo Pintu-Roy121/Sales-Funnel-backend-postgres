@@ -3,12 +3,13 @@ import AppError from "@/app/errorHelpers/appError";
 import { getPagination, getPaginationResponse } from "@/app/utils/pagination";
 import { Request } from "express";
 import { StatusCodes } from "http-status-codes";
+import { TClient } from "./client.interface";
 
-const createClient = async (payload: any) => {
-  const { clientOldId } = payload;
+const createClient = async (payload: TClient) => {
+  const { email } = payload;
 
   const isClientExist = await prisma.client.findUnique({
-    where: { clientOldId },
+    where: { email },
   });
 
   if (isClientExist) {

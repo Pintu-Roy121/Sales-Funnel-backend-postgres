@@ -27,10 +27,10 @@ model Lead {
     clientType             ClientType             @default(CORP)
     clientClass            ClientClass            @default(new)
     organizationName       String?
-    division               String
-    district               String
-    thana                  String
-    detailedAddress        String                 @default("")
+    division               String?
+    district               String?
+    thana                  String?
+    detailedAddress        String
     clientFName            String
     clientLName            String
     clientDesignation      String?
@@ -42,9 +42,9 @@ model Lead {
     existingPreviousIsp    String?
     connectivityMethod     String
     serviceClass           String
-    serviceType            String[]
+    // serviceType            String[]
     addOnType              String                 @default("none")
-    packageName            String?
+    // packageName            String?
     // Lead metrics
     interactionCount       Int                    @default(0)
     mrcAmount              Decimal                @default(0) @db.Decimal(11, 2)
@@ -125,8 +125,8 @@ model ConnectivityLocation {
 
     serviceName String
     address     String
-    packageName String  @default("")
-    remarks     String  @default("")
+    packageName String?
+    remarks     String?
     mrc         Decimal @default(0) @db.Decimal(11, 2)
     otc         Decimal @default(0) @db.Decimal(11, 2)
     qty         Int     @default(0)

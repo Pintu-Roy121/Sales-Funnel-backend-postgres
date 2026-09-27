@@ -1,120 +1,87 @@
 import { ClientClass, ClientType } from "@prisma/client";
-import { body } from "express-validator";
+import { z } from "zod";
 
-export const createClientValidator = [
-  body("clientType")
-    .default('CORP')
-    .isIn(Object.values(ClientType))
-    .withMessage("Client type must be a string"),
+export const createClientSchema = z.object({
+  clientType: z
+    .enum(Object.values(ClientType) as [string, ...string[]], {
+      message: "Client type must be a string",
+    })
+    .default(ClientType.CORP),
 
-  body("clientClass")
-    .default('new')
-    .isIn(Object.values(ClientClass))
-    .withMessage("Client class must be a string"),
+  clientClass: z
+    .enum(Object.values(ClientClass) as [string, ...string[]], {
+      message: "Client class must be a string",
+    })
+    .default(ClientClass.new),
 
-  body("clientFName")
+  clientFName: z
+    .string({
+      message: "Client first name is required",
+    })
     .trim()
-    .notEmpty()
-    .withMessage("Client first name is required"),
+    .min(1, "Client first name is required"),
 
-  body("clientLName")
+  clientLName: z
+    .string({
+      message: "Client last name is required",
+    })
     .trim()
-    .notEmpty()
-    .withMessage("Client last name is required"),
+    .min(1, "Client last name is required"),
 
-  body("organizationName")
+  organizationName: z
+    .string({
+      message: "Organization name is required",
+    })
     .trim()
-    .notEmpty()
-    .withMessage("Organization name is required"),
+    .min(1, "Organization name is required"),
 
-  body("email")
+  email: z
+    .email("Valid email is required")
     .trim()
-    .isEmail()
-    .withMessage("Valid email is required")
-    .normalizeEmail(),
+    .toLowerCase(),
 
-  body("phone")
+  phone: z
+    .string({
+      message: "Phone number is required",
+    })
     .trim()
-    .notEmpty()
-    .withMessage("Phone number is required"),
+    .min(1, "Phone number is required"),
 
-  body("locationId")
-    .isInt()
-    .withMessage("Location ID must be a valid integer"),
+  locationId: z.coerce
+    .number({
+      message: "Location ID must be a valid integer",
+    })
+    .int("Location ID must be a valid integer"),
 
-  body("detailedAddress")
+  detailedAddress: z
+    .string({
+      message: "Detailed address is required",
+    })
     .trim()
-    .notEmpty()
-    .withMessage("Detailed address is required"),
+    .min(1, "Detailed address is required"),
 
-  body("clientDesignation")
-    .optional({ values: "null" })
+  clientDesignation: z
+    .string()
     .trim()
-    .isString()
-    .withMessage("Client designation must be a string"),
+    .nullable()
+    .optional(),
 
-  body("houseHold")
-    .optional({ values: "null" })
+  houseHold: z
+    .string()
     .trim()
-    .isString()
-    .withMessage("Household must be a string"),
+    .nullable()
+    .optional(),
 
-  body("clientIndustry")
-    .optional({ values: "null" })
+  clientIndustry: z
+    .string()
     .trim()
-    .isString()
-    .withMessage("Client industry must be a string"),
+    .nullable()
+    .optional(),
 
-  body("status")
-    .default("active")
+  status: z
+    .string()
     .trim()
-    .isString()
-    .withMessage("Status must be a string"),
-];
+    .default("active"),
+});
 
-
-
-// export const createClientValidator = [
-//   body("clientOldId")
-//     .trim()
-//     .notEmpty()
-//     .withMessage("Old Client ID is required"),
-
-//   body("clientType")
-//     .optional({ values: "null" })
-//     .trim()
-//     .isString()
-//     .withMessage("Client type must be a string"),
-
-//   body("clientFName")
-//     .trim()
-//     .notEmpty()
-//     .withMessage("Client first name is required"),
-
-//   body("clientLName")
-//     .trim()
-//     .notEmpty()
-//     .withMessage("Client last name is required"),
-
-//   body("companyName").trim().notEmpty().withMessage("Company name is required"),
-
-//   body("email")
-//     .trim()
-//     .isEmail()
-//     .withMessage("Valid email is required")
-//     .normalizeEmail(),
-
-//   body("phone").trim().notEmpty().withMessage("Phone number is required"),
-
-//   body("division").trim().notEmpty().withMessage("Division is required"),
-
-//   body("district").trim().notEmpty().withMessage("District is required"),
-
-//   body("thana").trim().notEmpty().withMessage("Thana is required"),
-//   body("status")
-//     .optional({ values: "null" })
-//     .trim()
-//     .isString()
-//     .withMessage("Status must be a string"),
-//   body("fullAddress").trim().notEmpty().withMessage("Full address is required"),
-// ];
+export type TCreateClient = z.infer<typeof createClientSchema>;

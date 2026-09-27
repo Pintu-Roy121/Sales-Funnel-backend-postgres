@@ -5,6 +5,7 @@ import { envVars } from "../config/env";
 import AppError from "../errorHelpers/appError";
 import { handleValidationError } from "../helpers/handlePrismaClientValidationError";
 import { handlePrismaError } from "../helpers/handlePrismaError";
+import { handlerZodError } from "../helpers/handleZodError";
 import { TErrorSources } from "../interfaces/error.types";
 
 export const globalErrorHandler = async (
@@ -41,6 +42,11 @@ export const globalErrorHandler = async (
     ((message = "Prisma client failed to initialize!"),
       (err = err.message),
       (statusCode = StatusCodes.BAD_REQUEST));
+  } else if (err.name === "ZodError") {
+    const simplifiedError = handlerZodError(err);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorSources = simplifiedError.errorSources as TErrorSources[];
   } else if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;

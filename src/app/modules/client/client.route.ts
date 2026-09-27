@@ -1,13 +1,13 @@
 import { validateRequest } from "@/app/middlewares/validateRequest";
 import { Router } from "express";
 import { ClientController } from "./client.controller";
-import { createClientValidator } from "./client.validation";
+import { createClientSchema } from "./client.validation";
 
 const router = Router();
 
 router.post(
   "/create-client",
-  validateRequest(createClientValidator),
+  validateRequest(createClientSchema),
   ClientController.createClient,
 );
 

@@ -1,13 +1,13 @@
 import { validateRequest } from "@/app/middlewares/validateRequest";
 import { Router } from "express";
 import { UserController } from "./user.controller";
-import { createUserValidator } from "./user.validation";
+import { createUserSchema } from "./user.validation";
 
 const router = Router();
 
 router.post(
   "/create-user",
-  validateRequest(createUserValidator),
+  validateRequest(createUserSchema),
   UserController.createUser,
 );
 
