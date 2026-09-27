@@ -21,10 +21,6 @@ const createLead = async (payload: TCreateLead) => {
         ...rest
     } = payload;
 
-    // const isKAMUserExist = await prisma.user.findUnique({
-    //     where: { id: kamId }
-    // })
-
     const isUserExist = await prisma.user.findUnique({
         where: { email: userEmail }
     })
@@ -39,8 +35,7 @@ const createLead = async (payload: TCreateLead) => {
         throw new AppError(StatusCodes.FORBIDDEN, "Employees can only assign leads to themselves.")
     }
     const result = await prisma.$transaction(async (tnx) => {
-
-        let location = await tnx.location.findUnique({
+        const location = await tnx.location.upsert({
             where: {
                 division_district_thana: {
                     division,
@@ -48,29 +43,25 @@ const createLead = async (payload: TCreateLead) => {
                     thana,
                 },
             },
+            update: {},
+            create: {
+                division,
+                district,
+                thana,
+            },
             select: {
                 id: true,
             },
         });
-
-        if (!location) {
-            location = await tnx.location.create({
-                data: {
-                    division,
-                    district,
-                    thana,
-                },
-            });
-        }
 
         // 2. Create Lead and connect Location
         const lead = await tnx.lead.create({
             data: {
                 ...rest,
 
-                division,
-                district,
-                thana,
+                // division,
+                // district,
+                // thana,
 
                 kamId: kamId ?? null,
                 teamLeadId: teamLeadId ?? null,
@@ -79,28 +70,11 @@ const createLead = async (payload: TCreateLead) => {
 
                 locationId: location.id,
 
-                // ...(connectivityLocations?.length
-                //     ? {
-                //         connectivityLocations: {
-                //             create: connectivityLocations.map((item) => ({
-                //                 serviceName: item.serviceName,
-                //                 address: item.address,
-                //                 packageName:
-                //                     item.packageName ?? "",
-                //                 remarks: item.remarks ?? "",
-                //                 mrc: item.mrc ?? 0,
-                //                 otc: item.otc ?? 0,
-                //                 qty: item.qty ?? 0,
-                //                 tkPerMb: item.tkPerMb ?? 0,
-                //             })),
-                //         },
-                //     }
-                //     : {}),
             },
-            // include: {
-            //     connectivityLocations: true
-            // }
-
+            include: {
+                location: true,
+                connectivityLocations: true,
+            }
         });
 
         if (payload.connectivityLocations?.length) {
@@ -119,6 +93,21 @@ const createLead = async (payload: TCreateLead) => {
             });
         }
 
+        await tnx.maturityHistory.create({
+            data: {
+                leadId: lead.id,
+                stage: payload.maturityStage,
+                percentage: payload.maturityPercentage ?? 10,
+                oldMrcAmount: null,
+                newMrcAmount: null,
+                oldOtcAmount: null,
+                newOtcAmount: null,
+                oldExpectedClosingMonth: null,
+                newExpectedClosingMonth: null,
+                note: "Initial lead maturity stage logged automatically.",
+            },
+        });
+
         return lead;
     });
 
@@ -136,7 +125,8 @@ const getAll = async (req: Request) => {
         orderBy: { createdAt: "desc" },
         include: {
             connectivityLocations: true,
-            location: true
+            location: true,
+            maturityHistories: true
         }
 
     })

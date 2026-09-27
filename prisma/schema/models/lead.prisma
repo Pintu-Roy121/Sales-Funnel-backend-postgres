@@ -27,9 +27,9 @@ model Lead {
     clientType             ClientType             @default(CORP)
     clientClass            ClientClass            @default(new)
     organizationName       String?
-    division               String?
-    district               String?
-    thana                  String?
+    // division               String
+    // district               String
+    // thana                  String
     detailedAddress        String
     clientFName            String
     clientLName            String
@@ -101,25 +101,6 @@ model Lead {
     @@map("leads")
 }
 
-model MaturityHistory {
-    id                      Int      @id @default(autoincrement())
-    leadId                  Int
-    stage                   String
-    percentage              Decimal  @db.Decimal(5, 2)
-    oldMrcAmount            Decimal? @db.Decimal(11, 2)
-    newMrcAmount            Decimal? @db.Decimal(11, 2)
-    oldOtcAmount            Decimal? @db.Decimal(11, 2)
-    newOtcAmount            Decimal? @db.Decimal(11, 2)
-    oldExpectedClosingMonth String?
-    newExpectedClosingMonth String?
-    updatedAt               DateTime @default(now())
-    note                    String   @default("Pipeline metrics updated.")
-    lead                    Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
-
-    @@index([leadId])
-    @@map("maturity_histories")
-}
-
 model ConnectivityLocation {
     id Int @id @default(autoincrement())
 
@@ -137,6 +118,25 @@ model ConnectivityLocation {
 
     @@index([leadId])
     @@map("connectivity_locations")
+}
+
+model MaturityHistory {
+    id                      Int      @id @default(autoincrement())
+    leadId                  Int
+    stage                   String
+    percentage              Decimal  @db.Decimal(5, 2)
+    oldMrcAmount            Decimal? @db.Decimal(11, 2)
+    newMrcAmount            Decimal? @db.Decimal(11, 2)
+    oldOtcAmount            Decimal? @db.Decimal(11, 2)
+    newOtcAmount            Decimal? @db.Decimal(11, 2)
+    oldExpectedClosingMonth String?
+    newExpectedClosingMonth String?
+    updatedAt               DateTime @default(now())
+    note                    String   @default("Pipeline metrics updated.")
+    lead                    Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+    @@index([leadId])
+    @@map("maturity_histories")
 }
 
 model BillingDetail {

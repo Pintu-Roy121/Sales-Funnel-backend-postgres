@@ -8,7 +8,7 @@ import { StatusCodes } from "http-status-codes";
 import { TCreateUser } from "./user.interface";
 
 const createUser = async (payload: TCreateUser) => {
-  const { password, email, ...rest } = payload;
+  const { password, createdById, email, ...rest } = payload;
 
   if (!email) {
     throw new AppError(StatusCodes.BAD_REQUEST, "Email is required!");
@@ -22,6 +22,20 @@ const createUser = async (payload: TCreateUser) => {
 
   if (isUserExist) {
     throw new AppError(StatusCodes.CONFLICT, "Email already registered.");
+  }
+
+  if (!createdById) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "Created by ID is required for system admin!");
+
+  }
+
+  const createUser = await prisma.user.findUnique({
+    where: { id: createdById },
+  });
+
+
+  if (!createUser) {
+    throw new AppError(StatusCodes.NOT_FOUND, "User not found!");
   }
 
   const hashedPassword = await bcrypt.hash(
